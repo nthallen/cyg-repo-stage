@@ -1,1 +1,4 @@
+local_defs.cmake
 x86_64
+build
+upload.sh

@@ -1,0 +1,7 @@
+#! /bin/bash
+server=@PVT_CYG_SERVER@
+tgtdir=@PVT_CYG_SERVER_TGT_DIR@
+srcdir=@CYG_SRC_DIR@
+
+cd $srcdir
+rsync -av --delete x86_64 $server:$tgtdir
