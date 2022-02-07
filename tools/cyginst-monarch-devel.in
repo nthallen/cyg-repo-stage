@@ -1,0 +1,30 @@
+#
+# Need to manually:
+#   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted
+# Then navigate to the location where this script is located. That might
+# by $env:USERPROFILE\Downloads. In which case:
+#   Set-Location $env:USERPROFILE\Downloads
+# Then run the script:
+#   .\cyginst.ps1
+$curloc = Get-Location
+Set-Location $env:USERPROFILE\Downloads
+if (-not (Test-Path -Path setup-x86_64.exe -PathType Leaf))
+{ # need to download the program
+  $url = "https://cygwin.com/setup-x86_64.exe"
+  [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
+  write-host "Need to download cygwin setup from $url"
+  $dest = "setup-x86_64.exe"
+  $start_time = Get-Date
+  Invoke-WebRequest -Uri $url -OutFile $dest
+  Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
+}
+
+if (Test-Path -Path setup-x86_64.exe -PathType Leaf)
+{
+  start-process setup-x86_64.exe  -Wait -argumentlist "-s @PVT_CYG_SERVER_URL@ -s @FULL_CYG_SERVER_URL@ --packages monarch-devel -X"
+}
+else
+{
+  Write-Output "Download must have failed"
+}
+Set-Location $curloc.Path
